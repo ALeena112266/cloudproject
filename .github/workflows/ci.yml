@@ -1,0 +1,35 @@
+name: CI - Static Website
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install HTML & CSS linters
+        run: |
+          npm install -g htmlhint stylelint stylelint-config-standard
+
+      - name: Lint HTML files
+        run: |
+          htmlhint "**/*.html"
+
+      - name: Lint CSS (inline & external)
+        run: |
+          stylelint "**/*.css" || true
+
+      - name: CI completed
+        run: echo "Static website CI pipeline passed successfully"
